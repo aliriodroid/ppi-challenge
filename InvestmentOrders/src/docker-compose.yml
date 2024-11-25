@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    container_name: investment-orders-db
+    environment:
+      - POSTGRES_USER=ppi
+      - POSTGRES_PASSWORD=ppi123
+      - POSTGRES_DB=investment_orders
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - investment-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ppi"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: InvestmentOrders.API/Dockerfile
+    container_name: investment-orders-api
+    ports:
+      - "8080:80"
+      - "8081:443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80;https://+:443
+      - ConnectionStrings__DefaultConnection=Host=db;Database=investment_orders;Username=ppi;Password=ppi123;
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - investment-network
+
+networks:
+  investment-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    name: investment-orders-postgres-data
