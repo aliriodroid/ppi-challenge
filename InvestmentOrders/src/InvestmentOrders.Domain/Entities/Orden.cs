@@ -8,10 +8,9 @@ public class Orden
     public int Cantidad { get; set; }
     public decimal Precio { get; set; }
     public char Operacion { get; set; }
-    public int Estado { get; set; }
     public decimal MontoTotal { get; set; }
     public Activo Activo { get; set; }
     public int ActivoId { get; set; }
-    public int EstadoId { get; set; }
+    public int EstadoOrdenId { get; set; }
     public  EstadoOrden EstadoOrden { get; set; } 
 }

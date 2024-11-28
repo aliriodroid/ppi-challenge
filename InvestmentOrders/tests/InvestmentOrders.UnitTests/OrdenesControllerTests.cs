@@ -43,7 +43,6 @@ public class OrdenesControllerTests
             NombreActivo = ordenDto.NombreActivo,
             Cantidad = ordenDto.Cantidad,
             Operacion = ordenDto.Operacion,
-            EstadoId = 0,
             DescripcionEstado = "En proceso"
         };
 

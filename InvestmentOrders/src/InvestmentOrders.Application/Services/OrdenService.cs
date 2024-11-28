@@ -22,31 +22,13 @@ public class OrdenService : IOrdenService
 
     public async Task<OrdenDto> CrearOrdenAsync(CrearOrdenDto ordenDTO)
     {
-        // var activo = await _unitOfWork.Activos.GetByIdAsync(ordenDTO.ActivoId);
-        // if (activo == null)
-        //     throw new Exception("Activo no encontrado");
-        //
-        // var orden = _mapper.Map<Orden>(ordenDTO);
-        //
-        // if (activo.TipoActivoId == 1)
-        // {
-        //     orden.Precio = activo.PrecioUnitario;
-        // }
-        //
-        // orden.Estado = 0;
-        // orden.MontoTotal = _servicioCalculoMontoTotal.CalcularMontoTotal(orden, activo);
-        //
-        // await _unitOfWork.Ordenes.AddAsync(orden);
-        // await _unitOfWork.SaveChangesAsync();
-        //
-        // return _mapper.Map<OrdenDto>(orden);
         
         var activo = await _unitOfWork.Activos.GetByIdAsync(ordenDTO.ActivoId);
         if (activo == null)
             throw new Exception("Activo no encontrado");
 
         var orden = _mapper.Map<Orden>(ordenDTO);
-        orden.EstadoId = 0; // Estado inicial "En proceso"
+        orden.EstadoOrdenId = 0; // Estado inicial "En proceso"
         
         // Si es una acción, usamos el precio de la base de datos
         if (activo.TipoActivoId == 1) // Acción
@@ -54,7 +36,7 @@ public class OrdenService : IOrdenService
             orden.Precio = activo.PrecioUnitario;
         }
         
-        orden.Estado = 0;
+        orden.EstadoOrdenId = 0;
         orden.MontoTotal = _servicioCalculoMontoTotal.CalcularMontoTotal(orden, activo);
         
         await _unitOfWork.Ordenes.AddAsync(orden);
@@ -88,7 +70,7 @@ public class OrdenService : IOrdenService
         if (orden == null)
             throw new KeyNotFoundException($"Orden con ID {id} no encontrada");
 
-        orden.Estado = nuevoEstado;
+        orden.EstadoOrdenId = nuevoEstado;
         await _unitOfWork.Ordenes.UpdateAsync(orden);
         await _unitOfWork.SaveChangesAsync();
     }
